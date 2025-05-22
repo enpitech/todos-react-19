@@ -38,3 +38,39 @@ export default function Home() {
     </div>
   );
 }
+
+// Fetch todos
+
+// useEffect(() => {
+//     const fetchTodos = async () => {
+//       const response = await fetch("/todos");
+//       if (!response.ok) {
+//         throw new Error("Failed to fetch todos");
+//       }
+//       const data = await response.json();
+//       setTodos(data);
+//     };
+//     fetchTodos().catch((error) => {
+//       console.error("Error fetching todos:", error);
+//     });
+//   }, []);
+
+// Update todos
+
+// const handleStatusChange = async (id: number, status: boolean) => {
+//   setLoading(true);
+//   const formData = new FormData();
+//   formData.append("id", String(id));
+//   formData.append("status", String(status));
+
+//   const response = await fetch(`/todos/${id}`, {
+//     method: "PATCH",
+//     body: formData,
+//   });
+//   if (!response.ok) {
+//     throw new Error("Failed to update todo");
+//   }
+//   await response.json();
+//   await fetchTodos();
+//   setLoading(false);
+// };
