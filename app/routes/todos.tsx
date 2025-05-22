@@ -33,6 +33,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
     todoToUpdate.completed = status;
   } else {
+    // throw new Response("Invalid request", { status: 400 });
     const task = formData.get("task");
     if (typeof task !== "string" || !task) {
       throw new Response("Task is required", { status: 400 });
@@ -40,7 +41,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const todo = {
       task,
       completed: false,
-      id: Date.now(),
+      id: TODOS.length + 1,
     };
     TODOS.push(todo);
   }
