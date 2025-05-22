@@ -40,7 +40,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const todo = {
       task,
       completed: false,
-      id: Date.now(),
+      id: TODOS.length + 1,
     };
     TODOS.push(todo);
   }
