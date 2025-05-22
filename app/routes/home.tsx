@@ -20,7 +20,7 @@
 // Meta tags - https://react.dev/reference/react-dom/components/meta#noun-labs-1201738-(2)
 // Performance
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Todo, type TodoProps } from "~/components/Todo";
 
 export default function Home() {
