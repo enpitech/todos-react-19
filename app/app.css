@@ -40,3 +40,32 @@ body {
     opacity: 0.6;
   }
 }
+
+input[type="text"] {
+  @apply border border-gray-300 dark:border-gray-700 rounded-md p-2;
+  width: 100%;
+}
+input[type="text"]:focus {
+  @apply border-blue-500 dark:border-blue-400;
+  outline: none;
+}
+input[type="text"]:disabled {
+  @apply bg-gray-200 dark:bg-gray-700;
+}
+input[type="text"]:disabled:focus {
+  @apply border-gray-300 dark:border-gray-700;
+}
+
+button {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+  cursor: pointer;
+}
+button:hover {
+  @apply bg-blue-600;
+}
+button:disabled {
+  @apply bg-gray-400 cursor-not-allowed;
+}
+button:disabled:hover {
+  @apply bg-gray-400;
+}
