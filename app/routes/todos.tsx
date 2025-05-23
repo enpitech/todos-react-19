@@ -9,12 +9,10 @@ const TODOS = [
 
 export const loader = async () => {
   await sleep(1000);
-  return new Response(JSON.stringify(TODOS), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+
+  return {
+    todos: TODOS,
+  };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -46,10 +44,5 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     TODOS.push(todo);
   }
 
-  return new Response(JSON.stringify(TODOS), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return {};
 };
