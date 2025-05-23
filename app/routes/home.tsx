@@ -22,6 +22,8 @@
 // Performance
 
 import {
+  Suspense,
+  use,
   useActionState,
   useEffect,
   useOptimistic,
@@ -31,180 +33,146 @@ import {
 import { Todo, type TodoProps } from "~/components/Todo";
 import "../app.css";
 import { useFormStatus } from "react-dom";
+import { useNavigation, type ActionFunctionArgs } from "react-router";
+import { sleep } from "~/utils";
+import { ErrorBoundary } from "react-error-boundary";
 
-export default function Home() {
-  const [todos, setTodos] = useState<Omit<TodoProps, "onStatusChange">[]>([]);
-  const [loading, startTransition] = useTransition();
+const TODOS = [
+  { task: "Walk the dog", completed: false, id: 1 },
+  { task: "Do dishes", completed: false, id: 2 },
+  { task: "Learn about React 19", completed: true, id: 3 },
+];
 
-  const fetchTodos = async () => {
-    const response = await fetch("/todos");
-    if (!response.ok) {
-      throw new Error("Failed to fetch todos");
+export const loader = async () => {
+  return {
+    todos: await new Promise(async (resolve, reject) => {
+      await sleep(1000);
+      // reject("Error loading todos");
+      resolve(TODOS);
+    }),
+    moreTodos: await new Promise(async (resolve, reject) => {
+      await sleep(4000);
+      resolve(TODOS);
+    }),
+  };
+};
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  await sleep(1000);
+
+  const formData = await request.formData();
+  const id = Number(formData.get("id"));
+  const status = formData.get("status") === "true";
+
+  if (id && status !== undefined) {
+    const todoToUpdate = TODOS.find((todo) => {
+      return todo.id === id;
+    });
+    if (!todoToUpdate) {
+      throw new Response("Todo not found", { status: 404 });
     }
-    const data = await response.json();
-    setTodos(data);
-  };
+    todoToUpdate.completed = status;
+  } else {
+    // throw new Response("Invalid request", { status: 400 });
+    const task = formData.get("task");
+    if (typeof task !== "string" || !task) {
+      throw new Response("Task is required", { status: 400 });
+    }
+    const todo = {
+      task,
+      completed: false,
+      id: TODOS.length + 1,
+    };
+    TODOS.push(todo);
+  }
 
-  useEffect(() => {
-    startTransition(async () => {
-      await fetchTodos();
-    });
-  }, []);
+  return {};
+};
 
-  const handleStatusChange = async (id: number, status: boolean) => {
-    startTransition(async () => {
-      const formData = new FormData();
-      formData.append("id", String(id));
-      formData.append("status", String(status));
-
-      const response = await fetch(`/todos/${id}`, {
-        method: "PATCH",
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update todo");
-      }
-      await response.json();
-      await fetchTodos();
-    });
-  };
-
-  const completed = todos.filter((todo) => todo.completed).length;
-
-  const [optimisticTodos, setOptimisticTodos] = useOptimistic(todos);
-
-  const [error, createTodoAction, updating] = useActionState(
-    async (prevState: any, formData: any) => {
-      const response = await fetch("/todos", {
-        method: "PATCH",
-        body: formData,
-      });
-
-      setOptimisticTodos((prevTodos) => {
-        const task = formData.get("task");
-        const todo = {
-          task,
-          completed: false,
-          id: prevTodos.length + 1,
-        };
-        return [...prevTodos, todo];
-      });
-      if (!response.ok) {
-        return "Failed to create todo";
-      }
-      startTransition(fetchTodos);
-    },
-    null
-  );
+export default function Home({
+  loaderData,
+}: {
+  loaderData: { todos: TodoProps[]; moreTodos: Promise<TodoProps[]> };
+}) {
+  const { todos, moreTodos } = loaderData;
 
   return (
     <div className="App">
-      <div className="status-indicator">
-        <div>
-          {loading && <pre>Loading..</pre>}
-          {updating && <pre>Updating..</pre>}
-        </div>
-      </div>
-      {error && (
-        <div className="error">
-          <p>{error}</p>
-        </div>
-      )}
       <div className="Todos">
-        <div>Completed Todos: {completed}</div>
-        <form action={createTodoAction}>
-          {optimisticTodos.map((todo) => {
-            return (
-              <Todo
-                key={todo.id}
-                {...todo}
-                onStatusChange={handleStatusChange}
-              />
-            );
-          })}
-          <div className="flex">
-            <input type="text" name="task" placeholder="Add a new todo" />
-            <SubmitButton />
-          </div>
-        </form>
+        {todos.map((todo) => {
+          return <Todo key={todo.id} {...todo} />;
+        })}
       </div>
     </div>
   );
 }
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <button type="submit" disabled={pending}>
-      {pending ? "Creating..." : "Create"}
-    </button>
-  );
-}
+// function AsyncTodos({ todosPromise }: { todosPromise: Promise<TodoProps[]> }) {
+//   const todos = use(todosPromise) as TodoProps[];
 
-// Fetch todos
+//   return <Todos todos={todos} />;
+// }
 
-// useEffect(() => {
-//     const fetchTodos = async () => {
-//       const response = await fetch("/todos");
-//       if (!response.ok) {
-//         throw new Error("Failed to fetch todos");
-//       }
-//       const data = await response.json();
-//       setTodos(data);
-//     };
-//     fetchTodos().catch((error) => {
-//       console.error("Error fetching todos:", error);
-//     });
-//   }, []);
+// function Todos({ todos }: { todos: TodoProps[] }) {
+//   return (
+//     <>
+//       {todos.map((todo) => {
+//         return <Todo key={todo.id} {...todo} />;
+//       })}
+//     </>
+//   );
+// }
 
-// Updating todos
+// Previous functions
 
 // const handleStatusChange = async (id: number, status: boolean) => {
-//   setLoading(true);
-//   const formData = new FormData();
-//   formData.append("id", String(id));
-//   formData.append("status", String(status));
+//   startTransition(async () => {
+//     const formData = new FormData();
+//     formData.append("id", String(id));
+//     formData.append("status", String(status));
 
-//   const response = await fetch(`/todos/${id}`, {
-//     method: "PATCH",
-//     body: formData,
+//     const response = await fetch(`/todos/${id}`, {
+//       method: "PATCH",
+//       body: formData,
+//     });
+//     if (!response.ok) {
+//       throw new Error("Failed to update todo");
+//     }
+//     await response.json();
 //   });
-//   if (!response.ok) {
-//     throw new Error("Failed to update todo");
-//   }
-//   await response.json();
-//   await fetchTodos();
-//   setLoading(false);
 // };
 
-// Create todo onSubmit
+// const [optimisticTodos, setOptimisticTodos] = useOptimistic(todos);
 
-// onSubmit={async (e) => {
-//   e.preventDefault();
-//   const formData = new FormData(e.currentTarget);
+// const [error, createTodoAction, updating] = useActionState(
+//   async (prevState: any, formData: any) => {
+//     const response = await fetch("/home", {
+//       method: "PATCH",
+//       body: formData,
+//     });
 
-//   const response = await fetch("/todos", {
-//     method: "PATCH",
-//     body: formData,
-//   });
+//     setOptimisticTodos((prevTodos) => {
+//       const task = formData.get("task");
+//       const todo = {
+//         task,
+//         completed: false,
+//         id: prevTodos.length + 1,
+//       };
+//       return [...prevTodos, todo];
+//     });
+//     if (!response.ok) {
+//       return "Failed to create todo";
+//     }
+//     // startTransition(fetchTodos);
+//   },
+//   null
+// );
 
-//   if (!response.ok) {
-//     setError("Failed to create todo");
-//   }
-//   (e.target as HTMLFormElement).reset();
-//   fetchTodos();
-// }}
-
-// Create todo action
-// action={async (formData) => {
-//   const response = await fetch("/todos", {
-//     method: "PATCH",
-//     body: formData,
-//   });
-
-//   if (!response.ok) {
-//     setError("Failed to create todo");
-//     return;
-//   }
-//   fetchTodos();
-// }}
+// function SubmitButton() {
+//   const { pending } = useFormStatus();
+//   return (
+//     <button type="submit" disabled={pending}>
+//       {pending ? "Creating..." : "Create"}
+//     </button>
+//   );
+// }
