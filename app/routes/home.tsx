@@ -20,6 +20,10 @@
 // Meta tags - https://react.dev/reference/react-dom/components/meta#noun-labs-1201738-(2)
 // Performance
 
+// /todos - GET - get todos
+// /todos - PATCH - update todo
+// /todos - POST - new todo
+
 import { useState } from "react";
 import { Todo, type TodoProps } from "~/components/Todo";
 
