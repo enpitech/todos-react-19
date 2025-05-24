@@ -1,6 +1,6 @@
-import "../App.css";
+import "../app.css";
 
-export default function Spinner({ size = "small", color = "primary" }) {
+export default function Spinner({ size = "small", color = "black" }) {
   const sizeClass = `spinner--${size}`;
   const colorClass = `spinner--${color}`;
 

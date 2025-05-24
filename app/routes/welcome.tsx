@@ -4,9 +4,15 @@ import Spinner from "~/components/Spinner";
 export default function Welcome() {
   const navigation = useNavigation();
 
-  if (navigation.state === "loading") {
-    return <div>Loading...</div>;
-  }
+  // if (navigation.state === "loading") {
+  //   return <div>Loading...</div>;
+  // }
 
-  return <Link to="/home">Go Home</Link>;
+  const loading = navigation.state === "loading";
+
+  return (
+    <button>
+      <Link to="/home">{loading ? <Spinner /> : "Show Todos"}</Link>
+    </button>
+  );
 }
