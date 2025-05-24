@@ -27,7 +27,6 @@
 // /todos - POST - new todo
 
 import { useState } from "react";
-import { useFormStatus } from "react-dom";
 import { Todo } from "~/components/Todo";
 
 export type TodoData = {
