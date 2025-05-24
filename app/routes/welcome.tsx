@@ -4,10 +4,6 @@ import Spinner from "~/components/Spinner";
 export default function Welcome() {
   const navigation = useNavigation();
 
-  // if (navigation.state === "loading") {
-  //   return <div>Loading...</div>;
-  // }
-
   const loading = navigation.state === "loading";
 
   return (
