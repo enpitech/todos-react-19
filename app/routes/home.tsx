@@ -19,7 +19,7 @@
 // use + Suspense - https://react.dev/reference/react/use#noun-labs-1201738-(2)
 
 // Meta tags - https://react.dev/reference/react-dom/components/meta#noun-labs-1201738-(2)
-// Performance
+// Performance - preFetchDNS, preconnect, preinit, preInitModule, preload, preloadModule
 
 import {
   useActionState,
