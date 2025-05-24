@@ -44,6 +44,8 @@ body {
 input[type="text"] {
   @apply border border-gray-300 dark:border-gray-700 rounded-md p-2;
   width: 100%;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 input[type="text"]:focus {
   @apply border-blue-500 dark:border-blue-400;
