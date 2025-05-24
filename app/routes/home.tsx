@@ -23,11 +23,12 @@ export const loader = async () => {
   return {
     todos: await new Promise(async (resolve, reject) => {
       await sleep(1000);
-      // reject("Error loading todos");
       resolve(TODOS);
     }),
     moreTodos: await new Promise(async (resolve, reject) => {
       await sleep(4000);
+      // reject("Error loading todos");
+      // return
       resolve(TODOS);
     }),
   };
