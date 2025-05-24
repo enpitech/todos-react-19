@@ -3,10 +3,15 @@
 // Meta tags - https://react.dev/reference/react-dom/components/meta#noun-labs-1201738-(2)
 // Performance - preFetchDNS, preconnect, preinit, preInitModule, preload, preloadModule
 
-import { Todo, type TodoProps } from "~/components/Todo";
+import { Todo } from "~/components/Todo";
 import "../app.css";
 import { sleep } from "~/utils";
-import { ErrorBoundary } from "react-error-boundary";
+
+export type TodoData = {
+  task: string;
+  completed: boolean;
+  id: number;
+};
 
 const TODOS = [
   { task: "Walk the dog", completed: false, id: 1 },
@@ -31,7 +36,7 @@ export const loader = async () => {
 export default function Home({
   loaderData,
 }: {
-  loaderData: { todos: TodoProps[]; moreTodos: Promise<TodoProps[]> };
+  loaderData: { todos: TodoData[]; moreTodos: Promise<TodoData[]> };
 }) {
   const { todos, moreTodos } = loaderData;
 
@@ -39,7 +44,7 @@ export default function Home({
     <div className="App">
       <div className="Todos">
         {todos.map((todo) => {
-          return <Todo key={todo.id} {...todo} />;
+          return <Todo key={todo.id} {...todo} onStatusChange={() => {}} />;
         })}
       </div>
     </div>
