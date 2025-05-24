@@ -7,14 +7,14 @@
 // startTransition ✅
 // useTransition - supporting async and error boundary - https://react.dev/reference/react/useTransition# - ✅
 
-// Create new Todo - ✅
-// display error - ✅
-// formAction - ✅
+// Create new Todo
+// display error
+// formAction
 // useActionState - React query -> Meta frameworks -> Primitive! - https://react.dev/reference/react/useActionState#noun-labs-1201738-(2) - ✅
-// return error - ✅
-// loading state with useFormStatus - ✅
-// Improve update UX/Performance - ✅
-// useOptimistic - https://react.dev/reference/react/useOptimistic#noun-labs-1201738-(2) - ✅
+// return error
+// loading state with useFormStatus
+// Improve update UX/Performance
+// useOptimistic - https://react.dev/reference/react/useOptimistic#noun-labs-1201738-(2)
 
 // use + Suspense - https://react.dev/reference/react/use#noun-labs-1201738-(2)
 
