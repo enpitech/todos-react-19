@@ -1,9 +1,8 @@
-export interface TodoProps {
-  task: string;
-  completed: boolean;
-  id: number;
+import type { TodoData } from "~/routes/home";
+
+export type TodoProps = TodoData & {
   onStatusChange: (id: number, status: boolean) => void;
-}
+};
 
 export const Todo = ({ task, completed, id, onStatusChange }: TodoProps) => {
   return (

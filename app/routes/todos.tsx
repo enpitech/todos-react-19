@@ -8,6 +8,7 @@ const TODOS = [
 ];
 
 export const loader = async () => {
+  // throw new Error("error");
   await sleep(1000);
   return new Response(JSON.stringify(TODOS), {
     status: 200,
@@ -18,6 +19,7 @@ export const loader = async () => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  // throw new Error("error");
   await sleep(1000);
 
   const formData = await request.formData();
