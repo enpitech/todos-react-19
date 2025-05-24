@@ -6,7 +6,9 @@
 import { Todo } from "~/components/Todo";
 import "../app.css";
 import { sleep } from "~/utils";
-import { use } from "react";
+import { Suspense, use } from "react";
+import Spinner from "~/components/Spinner";
+import { ErrorBoundary } from "react-error-boundary";
 
 export type TodoData = {
   task: string;
@@ -29,7 +31,7 @@ export const loader = async () => {
     moreTodos: await new Promise(async (resolve, reject) => {
       await sleep(4000);
       // reject("Error loading todos");
-      // return
+      // return;
       resolve(TODOS);
     }),
   };
@@ -53,18 +55,26 @@ export default function Home({
   );
 }
 
-function AsyncTodos({ todosPromise }: { todosPromise: Promise<TodoData[]> }) {
-  const todos = use(todosPromise) as TodoData[];
+// function AsyncTodos({ todosPromise }: { todosPromise: Promise<TodoData[]> }) {
+//   const todos = use(todosPromise) as TodoData[];
 
-  return <Todos todos={todos} />;
-}
+//   return <Todos todos={todos} />;
+// }
 
-function Todos({ todos }: { todos: TodoData[] }) {
-  return (
-    <>
-      {todos.map((todo) => {
-        return <Todo key={todo.id} {...todo} onStatusChange={() => {}} />;
-      })}
-    </>
-  );
+// function Todos({ todos }: { todos: TodoData[] }) {
+//   return (
+//     <>
+//       {todos.map((todo) => {
+//         return <Todo key={todo.id} {...todo} onStatusChange={() => {}} />;
+//       })}
+//     </>
+//   );
+// }
+
+{
+  /* <ErrorBoundary fallback={<div>Error</div>}>
+          <Suspense fallback={<Spinner color="primary" />}>
+            <AsyncTodos todosPromise={moreTodos} />
+          </Suspense>
+        </ErrorBoundary> */
 }
