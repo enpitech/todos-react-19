@@ -6,6 +6,7 @@
 import { Todo } from "~/components/Todo";
 import "../app.css";
 import { sleep } from "~/utils";
+import { use } from "react";
 
 export type TodoData = {
   task: string;
@@ -52,18 +53,18 @@ export default function Home({
   );
 }
 
-// function AsyncTodos({ todosPromise }: { todosPromise: Promise<TodoProps[]> }) {
-//   const todos = use(todosPromise) as TodoProps[];
+function AsyncTodos({ todosPromise }: { todosPromise: Promise<TodoData[]> }) {
+  const todos = use(todosPromise) as TodoData[];
 
-//   return <Todos todos={todos} />;
-// }
+  return <Todos todos={todos} />;
+}
 
-// function Todos({ todos }: { todos: TodoProps[] }) {
-//   return (
-//     <>
-//       {todos.map((todo) => {
-//         return <Todo key={todo.id} {...todo} />;
-//       })}
-//     </>
-//   );
-// }
+function Todos({ todos }: { todos: TodoData[] }) {
+  return (
+    <>
+      {todos.map((todo) => {
+        return <Todo key={todo.id} {...todo} onStatusChange={() => {}} />;
+      })}
+    </>
+  );
+}
