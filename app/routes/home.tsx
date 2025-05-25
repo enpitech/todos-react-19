@@ -22,9 +22,9 @@
 // Meta tags - https://react.dev/reference/react-dom/components/meta#noun-labs-1201738-(2)
 // Performance - preFetchDNS, preconnect, preinit, preInitModule, preload, preloadModule
 
-// /todos - GET - get todos
-// /todos - PATCH - update todo
-// /todos - POST - new todo
+// fetch('/todos', {method: 'GET'}) - Get all todos
+// fetch('/todos', {method: 'PATCH'}) - Update existing todo
+// fetch('/todos', {method: 'POST'}) - Create new todo
 
 import { useState } from "react";
 import { Todo } from "~/components/Todo";
