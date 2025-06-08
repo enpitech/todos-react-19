@@ -26,7 +26,7 @@
 // fetch('/todos', {method: 'PATCH'}) - Update existing todo
 // fetch('/todos', {method: 'POST'}) - Create new todo
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Todo } from "~/components/Todo";
 
 export type TodoData = {
@@ -37,17 +37,62 @@ export type TodoData = {
 
 export default function Home() {
   const [todos, setTodos] = useState<TodoData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  const fetchTodos = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const response = await fetch("/todos");
+      if (!response.ok) {
+        throw new Error("Failed to fetch todos");
+      }
+      const data = await response.json();
+      setTodos(data);
+    } catch (e) {
+      setError((e as Error).toString());
+    }
+  };
+
+  useEffect(() => {
+    setError("");
+    setLoading(true);
+    fetchTodos().then(() => {
+      setLoading(false);
+    });
+  }, []);
+
+  const completed = todos.filter((todo) => todo.completed).length;
   return (
     <div className="App">
       <div className="Todos">
+        <div className="status-indicator">
+          {loading && <pre>Loading...</pre>}
+          {error && <pre>{error}</pre>}
+        </div>
+        <div>Completed Todos: {completed}</div>
         <form>
           {todos.map((todo) => {
             return (
               <Todo
                 key={todo.id}
                 {...todo}
-                onStatusChange={async (id, status) => {}}
+                onStatusChange={async (id, status) => {
+                  const formData = new FormData();
+                  formData.set("id", String(id));
+                  formData.set("status", String(status));
+                  setLoading(true);
+                  const response = await fetch("/todos", {
+                    method: "PATCH",
+                    body: formData,
+                  });
+                  if (!response.ok) {
+                    throw new Error("Failed to update todo");
+                  }
+                  await fetchTodos();
+                  setLoading(false);
+                }}
               />
             );
           })}
@@ -57,50 +102,7 @@ export default function Home() {
   );
 }
 
-// Fetch todos
-
-// useEffect(() => {
-//     setError("");
-//     setLoading(true);
-//     fetch("/todos")
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error("Failed to fetch todos");
-//         }
-//         return response.json();
-//       })
-//       .then((data) => {
-//         setTodos(data);
-//         setLoading(false);
-//       })
-//       .catch((e) => setError(e.toString()))
-//       .finally(() => {
-//         setLoading(false);
-//       });
-//   }, []);
-
-// Update todo
-
-// async (id, status) => {
-//                   const formData = new FormData();
-//                   formData.set("id", String(id));
-//                   formData.set("status", String(status));
-//                   setLoading(true);
-//                   const response = await fetch("/todos", {
-//                     method: "PATCH",
-//                     body: formData,
-//                   });
-//                   if (!response.ok) {
-//                     throw new Error("Failed to update todo");
-//                   }
-//                   await fetchTodos();
-//                   setLoading(false);
-//                 }}
-
 // Race condition
-
-// const completed = todos.filter((todo) => todo.completed).length;
-// <div>Completed Todos: {completed}</div>
 
 // startTransition
 // startTransition(async () => {
