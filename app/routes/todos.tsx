@@ -1,11 +1,33 @@
 import type { ActionFunctionArgs } from "react-router";
 import { sleep } from "~/utils";
 
-const TODOS = [
+export const TODOS = [
   { task: "Walk the dog", completed: false, id: 1 },
   { task: "Do dishes", completed: false, id: 2 },
   { task: "Learn about React 19", completed: true, id: 3 },
 ];
+
+export const updateTodoStatus = async ({
+  id,
+  status,
+}: {
+  id: number;
+  status: boolean;
+}) => {
+  const todoToUpdate = TODOS.find((todo) => {
+    return todo.id === id;
+  });
+  if (!todoToUpdate) {
+    throw new Response("Todo not found", { status: 404 });
+  }
+  todoToUpdate.completed = status;
+  return new Response(JSON.stringify(TODOS), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 
 export const loader = async () => {
   // throw new Error("error");
