@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router";
+import { todosApi } from "~/api/todos";
 import { TodosList } from "~/components/TodosList";
 
 export type TodoData = {
@@ -8,8 +9,8 @@ export type TodoData = {
 };
 
 export const loader = async () => {
-  debugger;
-  return <TodosList />;
+  const todos = await todosApi.getAll();
+  return <TodosList todos={todos} />;
 };
 
 export default function Home() {

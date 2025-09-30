@@ -1,28 +1,21 @@
-"use client";
-import { useTransition } from "react";
-import { changeTodoStatus } from "~/actions/changeTodoStatus";
 import type { TodoData } from "~/routes/home";
-import Spinner from "./Spinner";
+import { TodoCheckbox } from "./TodoCheckbox";
+import { DeleteTodoButton } from "./DeleteTodoButton";
 
 export type TodoProps = TodoData & {
   onStatusChange: (id: number, status: boolean) => void;
 };
 
 export const Todo = ({ task, completed, id }: TodoProps) => {
-  const [isPending, startTransition] = useTransition();
   return (
-    <div className={`flex items-center gap-2 ${isPending ? "opacity-50" : ""}`}>
-      <input
-        disabled={isPending}
-        type="checkbox"
-        name="statusadsas"
-        checked={completed}
-        onChange={() => startTransition(() => changeTodoStatus(id, !completed))}
-      />
+    <div className={`flex items-center gap-2 group`}>
+      <TodoCheckbox id={id} completed={completed} />
       <span style={{ textDecoration: completed ? "line-through" : "none" }}>
         {task}
       </span>
-      {isPending && <Spinner size="small" />}
+      <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <DeleteTodoButton id={id} />
+      </span>
     </div>
   );
 };

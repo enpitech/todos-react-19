@@ -1,78 +1,15 @@
-import type { ActionFunctionArgs } from "react-router";
-import { sleep } from "~/utils";
-
-export const TODOS = [
-  { task: "Walk the dog", completed: false, id: 1 },
-  { task: "Do dishes", completed: false, id: 2 },
-  { task: "Learn about React 19", completed: true, id: 3 },
-];
-
-export const updateTodoStatus = async ({
-  id,
-  status,
-}: {
-  id: number;
-  status: boolean;
-}) => {
-  const todoToUpdate = TODOS.find((todo) => {
-    return todo.id === id;
-  });
-  if (!todoToUpdate) {
-    throw new Response("Todo not found", { status: 404 });
-  }
-  todoToUpdate.completed = status;
-  return new Response(JSON.stringify(TODOS), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+import { todosApi } from "~/api/todos";
 
 export const loader = async () => {
-  // throw new Error("error");
-  await sleep(1000);
-  return new Response(JSON.stringify(TODOS), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  // throw new Error("error");
-  await sleep(1000);
-
-  const formData = await request.formData();
-  const id = Number(formData.get("id"));
-  const status = formData.get("status") === "true";
-
-  if (id && status !== undefined) {
-    const todoToUpdate = TODOS.find((todo) => {
-      return todo.id === id;
+  try {
+    const todos = await todosApi.getAll();
+    return new Response(JSON.stringify(todos), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
-    if (!todoToUpdate) {
-      throw new Response("Todo not found", { status: 404 });
-    }
-    todoToUpdate.completed = status;
-  } else {
-    const task = formData.get("task");
-    if (typeof task !== "string" || !task) {
-      throw new Response("Task is required", { status: 400 });
-    }
-    const todo = {
-      task,
-      completed: false,
-      id: TODOS.length + 1,
-    };
-    TODOS.push(todo);
+  } catch (error) {
+    throw new Response("Failed to load todos", { status: 500 });
   }
-
-  return new Response(JSON.stringify(TODOS), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 };

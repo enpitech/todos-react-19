@@ -1,14 +1,6 @@
 "use server";
-
-import { TODOS } from "~/routes/todos";
+import { todosApi } from "~/api/todos";
 
 export async function changeTodoStatus(id: number, status: boolean) {
-  const todoToUpdate = TODOS.find((todo) => {
-    return todo.id === id;
-  });
-
-  if (!todoToUpdate) {
-    return;
-  }
-  todoToUpdate.completed = status;
+  return await todosApi.update(id, { completed: status });
 }

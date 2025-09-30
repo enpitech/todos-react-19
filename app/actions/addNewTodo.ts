@@ -1,15 +1,14 @@
 "use server";
-import { TODOS } from "~/routes/todos";
+import { todosApi } from "~/api/todos";
+import { sleep } from "~/utils";
 
 export const addNewTodo = async (formData: FormData) => {
-  const task = formData.get("task");
-  if (typeof task !== "string" || !task) {
-    throw new Response("Task is required", { status: 400 });
-  }
-  const todo = {
-    task,
+  await sleep(1000);
+
+  const response = await todosApi.create({
+    task: formData.get("task") as string,
     completed: false,
-    id: TODOS.length + 1,
-  };
-  TODOS.push(todo);
+  });
+
+  return response;
 };

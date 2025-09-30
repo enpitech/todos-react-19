@@ -1,29 +1,38 @@
 "use client";
-import { useActionState, useOptimistic } from "react";
+import { useActionState, useEffect, useOptimistic, useState } from "react";
 import { addNewTodo } from "~/actions/addNewTodo";
 import type { TodoData } from "~/routes/home";
-import { TODOS } from "~/routes/todos";
 import { Todo } from "./Todo";
 import Spinner from "./Spinner";
+import { Button } from "./ui/Button";
 
 export const AddNewTodo = ({}) => {
   const [optimisticTodo, addOptimisticTodo] = useOptimistic<
     TodoData | undefined
   >(undefined);
+  const [responseText, setResponseText] = useState<string | undefined>(
+    undefined,
+  );
 
   const [, action, isPending] = useActionState(
-    (_prevState: unknown, formData: FormData) => {
+    async (_prevState: unknown, formData: FormData) => {
       addOptimisticTodo({
         task: formData.get("task") as string,
         completed: false,
-        id: TODOS.length + 1,
+        id: 0,
       });
 
-      addNewTodo(formData);
+      const response = await addNewTodo(formData);
+      setResponseText(response);
     },
     undefined,
   );
 
+  useEffect(() => {
+    setTimeout(() => {
+      setResponseText("");
+    }, 2500);
+  }, [responseText]);
   return (
     <>
       <div className="animate-pulse">
@@ -31,12 +40,17 @@ export const AddNewTodo = ({}) => {
           <Todo {...optimisticTodo} onStatusChange={() => {}} />
         )}
       </div>
+      {responseText && <p>{responseText}</p>}
       <form action={action}>
         <input type="text" name="task" />
-        <button type="submit" disabled={isPending}>
-          {isPending && <Spinner size="small" color="secondary" />}
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="flex items-center gap-2"
+        >
           Add
-        </button>
+          {isPending && <Spinner size="small" color="secondary" />}
+        </Button>
       </form>
     </>
   );

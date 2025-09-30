@@ -1,26 +1,26 @@
-import { sleep } from "~/utils";
-import { TodosListContent } from "./TodosListContent";
-import { Suspense } from "react";
 import { AddNewTodo } from "./AddNewTodo";
-import Spinner from "./Spinner";
+import { Todo } from "./Todo";
+import type { TodoData } from "~/routes/home";
 
-export const TodosList = async () => {
-  const todosResponse = fetch("http://localhost:5173/todos").then((response) =>
-    sleep(2000).then(() => response.json()),
-  );
-
+export const TodosList = ({ todos }: { todos: TodoData[] }) => {
   return (
     <div className="Todos">
-      <Suspense
-        fallback={
-          <div className="text-center">
-            {" "}
-            <Spinner size="small" /> Loading...
-          </div>
-        }
-      >
-        <TodosListContent todosPromise={todosResponse} />
-      </Suspense>
+      {todos.length === 0 && (
+        <div>
+          <p>Create your first todo 🚀 </p>
+        </div>
+      )}
+      {todos.map((todo: TodoData) => {
+        return (
+          <Todo
+            key={todo.id}
+            task={todo.task}
+            completed={todo.completed}
+            id={todo.id}
+            onStatusChange={async (id, status) => {}}
+          />
+        );
+      })}
       <AddNewTodo />
     </div>
   );

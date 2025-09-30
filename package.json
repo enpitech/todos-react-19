@@ -6,17 +6,22 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "json-server": "json-server --watch db.json --port 3001",
+    "dev:full": "concurrently \"npm run json-server\" \"npm run dev\""
   },
   "dependencies": {
     "@react-router/node": "^7.9.2",
     "@react-router/serve": "^7.9.2",
     "@vitejs/plugin-rsc": "^0.4.31",
     "isbot": "^5.1.27",
+    "lucide-react": "^0.544.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^6.0.0",
-    "react-router": "^7.9.2"
+    "react-router": "^7.9.2",
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@react-router/dev": "^7.9.2",
@@ -24,6 +29,8 @@
     "@types/node": "^20",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "concurrently": "^9.2.1",
+    "json-server": "^1.0.0-beta.3",
     "tailwindcss": "^4.1.4",
     "typescript": "^5.8.3",
     "vite": "^6.3.3",
