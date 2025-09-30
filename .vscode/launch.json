@@ -8,7 +8,8 @@
       "name": "Todos App",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev"
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

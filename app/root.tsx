@@ -38,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <header className="flex flex-col items-center gap-9">
               <h1 className="text-4xl font-bold">Todos - React 19</h1>
             </header>
-            <div className="max-w-[300px] w-full space-y-6 px-4">
+            <div className="max-w-[700px] w-full space-y-6 px-4">
               {children}
             </div>
           </div>
